@@ -18,7 +18,9 @@ export function Step5Payment({ data, updateData, onNext, onPrev }: Props) {
 
     const validateCard = () => {
         if (paymentMethod !== 'card') return true;
-        return cardDetails.number.length >= 15 && cardDetails.expiry.length >= 4 && cardDetails.cvc.length >= 3;
+        const cleanNumber = cardDetails.number.replace(/\s/g, '');
+        const cleanExpiry = cardDetails.expiry.replace(/\//g, '');
+        return cleanNumber.length >= 15 && cleanExpiry.length === 4 && cardDetails.cvc.length >= 3;
     };
 
     const handlePayment = async () => {
@@ -93,13 +95,81 @@ export function Step5Payment({ data, updateData, onNext, onPrev }: Props) {
 
                     {/* Card Details Mock Form */}
                     {paymentMethod === 'card' && (
-                        <div className="animate-fade-in" style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                        <div className="animate-fade-in" style={{
+                            background: 'white',
+                            padding: '1.5rem',
+                            borderRadius: '12px',
+                            border: '1px solid var(--border-color)',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+                        }}>
                             <div style={{ marginBottom: '1rem' }}>
-                                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Card Information</label>
-                                <input type="text" className="glass-input" placeholder="0000 0000 0000 0000" maxLength={19} value={cardDetails.number} onChange={e => setCardDetails({ ...cardDetails, number: e.target.value.replace(/\D/g, '') })} style={{ marginBottom: '-1px', borderRadius: '4px 4px 0 0', borderBottom: '1px solid var(--border-color)', paddingTop: '12px', paddingBottom: '12px' }} />
-                                <div style={{ display: 'flex' }}>
-                                    <input type="text" className="glass-input" placeholder="MM/YY" maxLength={5} value={cardDetails.expiry} onChange={e => setCardDetails({ ...cardDetails, expiry: e.target.value })} style={{ flex: 1, borderRadius: '0 0 0 4px', borderRight: '1px solid var(--border-color)', borderTop: 'none', paddingTop: '12px', paddingBottom: '12px' }} />
-                                    <input type="text" className="glass-input" placeholder="CVC" maxLength={4} value={cardDetails.cvc} onChange={e => setCardDetails({ ...cardDetails, cvc: e.target.value.replace(/\D/g, '') })} style={{ flex: 1, borderRadius: '0 0 4px 0', borderTop: 'none', paddingTop: '12px', paddingBottom: '12px' }} />
+                                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.8rem', fontWeight: '500' }}>Card Information</label>
+
+                                <div style={{
+                                    border: '1px solid var(--border-color)',
+                                    borderRadius: '8px',
+                                    overflow: 'hidden'
+                                }}>
+                                    <input
+                                        type="text"
+                                        className="payment-input"
+                                        placeholder="0000 0000 0000 0000"
+                                        maxLength={19}
+                                        value={cardDetails.number}
+                                        onChange={e => {
+                                            const value = e.target.value.replace(/\D/g, '');
+                                            const formatted = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                                            setCardDetails({ ...cardDetails, number: formatted });
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            border: 'none',
+                                            borderBottom: '1px solid var(--border-color)',
+                                            padding: '14px 16px',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            letterSpacing: '1px'
+                                        }}
+                                    />
+                                    <div style={{ display: 'flex' }}>
+                                        <input
+                                            type="text"
+                                            className="payment-input"
+                                            placeholder="MM/YY"
+                                            maxLength={5}
+                                            value={cardDetails.expiry}
+                                            onChange={e => {
+                                                let value = e.target.value.replace(/\D/g, '');
+                                                if (value.length > 2) {
+                                                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                                                }
+                                                setCardDetails({ ...cardDetails, expiry: value });
+                                            }}
+                                            style={{
+                                                flex: 1,
+                                                border: 'none',
+                                                borderRight: '1px solid var(--border-color)',
+                                                padding: '14px 16px',
+                                                fontSize: '1rem',
+                                                outline: 'none'
+                                            }}
+                                        />
+                                        <input
+                                            type="text"
+                                            className="payment-input"
+                                            placeholder="CVC"
+                                            maxLength={4}
+                                            value={cardDetails.cvc}
+                                            onChange={e => setCardDetails({ ...cardDetails, cvc: e.target.value.replace(/\D/g, '') })}
+                                            style={{
+                                                flex: 1,
+                                                border: 'none',
+                                                padding: '14px 16px',
+                                                fontSize: '1rem',
+                                                outline: 'none'
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
