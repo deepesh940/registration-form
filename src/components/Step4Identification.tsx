@@ -46,7 +46,7 @@ export function Step4Identification({ data, updateData, onNext, onPrev }: Props)
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)', fontWeight: '600' }}>Identification & Citizenship</h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
-                    To securely process your identity verification and open your account, a $5 fee is required.
+                    To securely Process your identity verification and open your account, a $5 fee is required.
                 </p>
             </div>
 
