@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { RegistrationState } from '../types/registration';
 import '../index.css';
 
@@ -10,11 +10,9 @@ interface Props {
 }
 
 export function Step6IdentityVerification({ data, updateData, onNext, onPrev }: Props) {
-    const [isVerifying, setIsVerifying] = useState(false);
     const [error, setError] = useState('');
 
     const startVerification = async () => {
-        setIsVerifying(true);
         setError('');
         updateData({ verificationStatus: 'in_progress' });
 
@@ -36,7 +34,6 @@ export function Step6IdentityVerification({ data, updateData, onNext, onPrev }: 
         } catch (err: any) {
             setError(err.message || 'Verification process encountered an issue.');
             updateData({ verificationStatus: 'failed' });
-            setIsVerifying(false);
         }
     };
 
