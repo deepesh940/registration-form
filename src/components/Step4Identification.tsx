@@ -46,7 +46,7 @@ export function Step4Identification({ data, updateData, onNext, onPrev }: Props)
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)', fontWeight: '600' }}>Identification & Citizenship</h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
-                    Please enter your information and select 'Next' to continue.
+                    To securely process your identity verification and open your account, a $5 fee is required.
                 </p>
             </div>
 
@@ -88,20 +88,28 @@ export function Step4Identification({ data, updateData, onNext, onPrev }: Props)
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <div style={{ position: 'relative' }}>
-                        <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>State Issued <span style={{ color: '#d89c3a' }}>*</span></label>
-                        <select
-                            className="glass-input"
-                            value={data.address.state || ''} // Re-using state field as "State Issued" for visual matching if needed
-                            onChange={e => updateData({ address: { ...data.address, state: e.target.value } })}
-                            required
-                            style={{ paddingTop: '12px', paddingBottom: '12px', color: data.address.state ? 'inherit' : '#999', appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7em top 50%', backgroundSize: '.65em auto' }}
-                        >
-                            <option value="" disabled>Select State</option>
-                            <option value="CA">California</option>
-                            <option value="NY">New York</option>
-                            <option value="TX">Texas</option>
-                            {/* More options could be added */}
-                        </select>
+                        <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>Upload Document <span style={{ color: '#d89c3a' }}>*</span></label>
+                        <div className="glass-input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', cursor: 'pointer' }} onClick={() => document.getElementById('id-upload')?.click()}>
+                            <span style={{ color: data.idDocument ? 'inherit' : '#999', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {data.idDocument ? data.idDocument : 'Choose file...'}
+                            </span>
+                            <input
+                                id="id-upload"
+                                type="file"
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        updateData({ idDocument: file.name });
+                                    }
+                                }}
+                            />
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--primary)' }}>
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
@@ -160,8 +168,8 @@ export function Step4Identification({ data, updateData, onNext, onPrev }: Props)
                     <button type="button" className="btn-secondary" style={{ flex: 1, minWidth: 'auto' }} onClick={onPrev}>
                         Back
                     </button>
-                    <button type="submit" className="btn-primary" style={{ flex: 1, minWidth: 'auto' }} disabled={!data.idType || !data.idNumber || !data.address.state || (data.isUsCitizen !== true && data.isUsCitizen !== false) || (data.isUsCitizen && (data.ssn || '').length !== 11)}>
-                        Next
+                    <button type="submit" className="btn-primary" style={{ flex: 1.5, minWidth: 'auto' }} disabled={!data.idType || !data.idNumber || !data.idDocument || (data.isUsCitizen !== true && data.isUsCitizen !== false) || (data.isUsCitizen && (data.ssn || '').length !== 11)}>
+                        Pay and verify
                     </button>
                 </div>
             </form>

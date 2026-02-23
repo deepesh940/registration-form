@@ -102,17 +102,11 @@ export function Step2BasicInfo({ data, updateData, onNext, onPrev }: Props) {
 
             <form onSubmit={handleNext} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '450px', margin: '0 auto' }}>
 
-                {/* Profile Info Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-
+                {/* Name Fields in one line */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', gridColumn: '1 / -1' }}>
                     <div style={{ position: 'relative' }}>
                         <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>First Name <span style={{ color: '#d89c3a' }}>*</span></label>
                         <input type="text" className="glass-input" value={data.firstName} onChange={e => updateData({ firstName: e.target.value })} required style={{ paddingTop: '12px', paddingBottom: '12px' }} />
-                    </div>
-
-                    <div style={{ position: 'relative' }}>
-                        <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>Last Name <span style={{ color: '#d89c3a' }}>*</span></label>
-                        <input type="text" className="glass-input" value={data.lastName} onChange={e => updateData({ lastName: e.target.value })} required style={{ paddingTop: '12px', paddingBottom: '12px' }} />
                     </div>
 
                     <div style={{ position: 'relative' }}>
@@ -120,6 +114,14 @@ export function Step2BasicInfo({ data, updateData, onNext, onPrev }: Props) {
                         <input type="text" className="glass-input" value={data.middleName} onChange={e => updateData({ middleName: e.target.value })} style={{ paddingTop: '12px', paddingBottom: '12px' }} />
                     </div>
 
+                    <div style={{ position: 'relative' }}>
+                        <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>Last Name <span style={{ color: '#d89c3a' }}>*</span></label>
+                        <input type="text" className="glass-input" value={data.lastName} onChange={e => updateData({ lastName: e.target.value })} required style={{ paddingTop: '12px', paddingBottom: '12px' }} />
+                    </div>
+                </div>
+
+                {/* Identity Info Grid - 3 columns */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                     <div style={{ position: 'relative' }}>
                         <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>Birthday <span style={{ color: '#d89c3a' }}>*</span></label>
                         <input type="date" className="glass-input" value={data.birthday} onChange={e => updateData({ birthday: e.target.value })} required style={{ paddingTop: '12px', paddingBottom: '12px', color: data.birthday ? 'inherit' : '#999' }} />
@@ -146,11 +148,11 @@ export function Step2BasicInfo({ data, updateData, onNext, onPrev }: Props) {
                             <option value="Separated">Separated</option>
                         </select>
                     </div>
+                </div>
 
-                    <div style={{ position: 'relative', gridColumn: '1 / -1' }}>
-                        <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>Mother's Maiden Name <span style={{ color: '#d89c3a' }}>*</span></label>
-                        <input type="text" className="glass-input" value={data.motherMaidenName} onChange={e => updateData({ motherMaidenName: e.target.value })} required style={{ paddingTop: '12px', paddingBottom: '12px' }} />
-                    </div>
+                <div style={{ position: 'relative' }}>
+                    <label style={{ position: 'absolute', top: '-8px', left: '10px', background: 'white', padding: '0 4px', fontSize: '0.75rem', color: '#999', zIndex: 1 }}>Mother's Maiden Name <span style={{ color: '#d89c3a' }}>*</span></label>
+                    <input type="text" className="glass-input" value={data.motherMaidenName} onChange={e => updateData({ motherMaidenName: e.target.value })} required style={{ paddingTop: '12px', paddingBottom: '12px' }} />
                 </div>
 
                 <hr style={{ borderColor: 'var(--border-color)', margin: '0.5rem 0' }} />

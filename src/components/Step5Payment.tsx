@@ -12,7 +12,6 @@ interface Props {
 export function Step5Payment({ data, updateData, onNext, onPrev }: Props) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState('');
-    const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('card');
     const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvc: '' });
 
@@ -53,33 +52,15 @@ export function Step5Payment({ data, updateData, onNext, onPrev }: Props) {
         <div className="animate-fade-in" style={{ width: '100%', maxWidth: '450px', margin: '0 auto', textAlign: 'center' }}>
             <div style={{ marginBottom: '2rem' }}>
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)', fontWeight: '600' }}>
-                    {!showPaymentMethod ? 'Identity Verification Fee' : 'Payment Method'}
+                    Payment Method
                 </h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
-                    {!showPaymentMethod
-                        ? 'To securely process your identity verification and open your account, a $5 fee is required.'
-                        : 'Please select your preferred payment method.'}
+                    Please select your preferred payment method.
                 </p>
             </div>
 
-            {!showPaymentMethod && (
-                <div style={{
-                    background: '#fafafa',
-                    borderRadius: '8px',
-                    padding: '2rem',
-                    marginBottom: '2rem',
-                    border: '1px solid var(--border-color)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                }}>
-                    <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>Amount Due</span>
-                    <span style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--bg-top)' }}>$5.00</span>
-                </div>
-            )}
 
-            {showPaymentMethod && data.paymentStatus !== 'completed' && (
+            {data.paymentStatus !== 'completed' && (
                 <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                     {/* Payment Method Selector */}
                     <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -204,18 +185,12 @@ export function Step5Payment({ data, updateData, onNext, onPrev }: Props) {
                 </div>
             ) : (
                 <div className="form-actions" style={{ gap: '1rem', marginTop: '1rem', paddingBottom: 0 }}>
-                    <button type="button" className="btn-secondary" style={{ flex: 1, minWidth: 'auto' }} onClick={() => showPaymentMethod ? setShowPaymentMethod(false) : onPrev()} disabled={isProcessing}>
+                    <button type="button" className="btn-secondary" style={{ flex: 1, minWidth: 'auto' }} onClick={onPrev} disabled={isProcessing}>
                         Back
                     </button>
-                    {!showPaymentMethod ? (
-                        <button type="button" className="btn-primary" style={{ flex: 2, minWidth: 'auto' }} onClick={() => setShowPaymentMethod(true)}>
-                            Next
-                        </button>
-                    ) : (
-                        <button type="button" className="btn-primary" style={{ flex: 2, minWidth: 'auto' }} onClick={handlePayment} disabled={isProcessing || !validateCard()}>
-                            {isProcessing ? 'Processing...' : 'Pay $5.00'}
-                        </button>
-                    )}
+                    <button type="button" className="btn-primary" style={{ flex: 2, minWidth: 'auto' }} onClick={handlePayment} disabled={isProcessing || !validateCard()}>
+                        {isProcessing ? 'Processing...' : 'Pay $5.00'}
+                    </button>
                 </div>
             )}
 

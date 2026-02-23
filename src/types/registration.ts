@@ -1,4 +1,4 @@
-export type Step = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type Step = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface RegistrationState {
   step: Step;
@@ -24,6 +24,7 @@ export interface RegistrationState {
   isAddressVerified: boolean;
   idType: string;
   idNumber: string;
+  idDocument?: string;
   isUsCitizen: boolean;
   ssn?: string;
   paymentStatus: 'pending' | 'completed' | 'failed';

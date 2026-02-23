@@ -2,20 +2,17 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import type { RegistrationState, Step } from '../types/registration';
-import { Step0EligibilityCheck } from './Step0EligibilityCheck';
 import { Step1EmailCapture } from './Step1EmailCapture';
 import { Step2BasicInfo } from './Step2BasicInfo';
 import { Step3AddressInfo } from './Step3AddressInfo';
 import { Step4Identification } from './Step4Identification';
-import { Step5Summary } from './Step5Summary';
-import { Step5Payment as Step6Payment } from './Step5Payment';
-import { Step6IdentityVerification as Step7IdentityVerification } from './Step6IdentityVerification';
-import { Step7Completion as Step8Completion } from './Step7Completion';
+import { Step5Payment } from './Step5Payment';
+import { Step7Completion as Step6Completion } from './Step7Completion';
 import '../index.css';
 import logoImg from '../assets/logo.png';
 
 const initialState: RegistrationState = {
-    step: 4, // Started on Step 4 for demonstration matching the screenshot
+    step: 1, // Started on Step 1 as Step 0 is removed
     email: '',
     isEmailVerified: false,
     firstName: '',
@@ -46,19 +43,20 @@ const initialState: RegistrationState = {
 
 // 8 sub-steps mapped to 3 high level phases
 const getPhaseInfo = (step: Step) => {
-    if (step <= 2) return { currentPhase: 1, label: 'Eligibility' };
-    if (step <= 4) return { currentPhase: 2, label: 'Information' };
-    return { currentPhase: 3, label: 'Complete' };
+    if (step <= 2) return { currentPhase: 1, label: 'Basic' };
+    if (step === 3) return { currentPhase: 2, label: 'Address' };
+    if (step <= 5) return { currentPhase: 3, label: 'Identification' };
+    return { currentPhase: 4, label: 'Complete' };
 };
 
 export function RegistrationLayout() {
     const { stepId } = useParams<{ stepId: string }>();
     const navigate = useNavigate();
 
-    // Parse stepId, default to 0 if invalid
-    let parsedStep = parseInt(stepId || '0', 10);
-    if (isNaN(parsedStep) || parsedStep < 0 || parsedStep > 8) {
-        parsedStep = 0;
+    // Parse stepId, default to 1 if invalid
+    let parsedStep = parseInt(stepId || '1', 10);
+    if (isNaN(parsedStep) || parsedStep < 1 || parsedStep > 6) {
+        parsedStep = 1;
     }
     const currentStep = parsedStep as Step;
 
@@ -87,8 +85,8 @@ export function RegistrationLayout() {
     }, [showTimeoutWarning]);
 
     const handleSessionExpire = useCallback(() => {
-        setData({ ...initialState, step: 0 });
-        navigate('/step/0', { replace: true });
+        setData({ ...initialState, step: 1 });
+        navigate('/step/1', { replace: true });
         setShowTimeoutWarning(false);
         setCountdown(COUNTDOWN_SECONDS);
         lastActivityRef.current = Date.now();
@@ -144,25 +142,23 @@ export function RegistrationLayout() {
     };
 
     const goToNextStep = () => {
-        const nextStep = Math.min(data.step + 1, 8) as Step;
+        const nextStep = Math.min(data.step + 1, 6) as Step;
         navigate(`/step/${nextStep}`);
     };
 
-    const handleResumeAddressStep = () => {
-        navigate(`/step/3`); // Address is now step 3
+    const handleResumeStep = (step: number) => {
+        navigate(`/step/${step}`);
     };
 
     const goToPreviousStep = () => {
-        const prevStep = Math.max(data.step - 1, 0) as Step;
+        const prevStep = Math.max(data.step - 1, 1) as Step;
         navigate(`/step/${prevStep}`);
     };
 
     const renderStep = () => {
         switch (data.step) {
-            case 0:
-                return <Step0EligibilityCheck data={data} updateData={updateData} onNext={goToNextStep} onResume={handleResumeAddressStep} />;
             case 1:
-                return <Step1EmailCapture data={data} updateData={updateData} onNext={goToNextStep} />;
+                return <Step1EmailCapture data={data} updateData={updateData} onNext={goToNextStep} onResume={() => handleResumeStep(3)} />;
             case 2:
                 return <Step2BasicInfo data={data} updateData={updateData} onNext={goToNextStep} onPrev={goToPreviousStep} />;
             case 3:
@@ -170,22 +166,19 @@ export function RegistrationLayout() {
             case 4:
                 return <Step4Identification data={data} updateData={updateData} onNext={goToNextStep} onPrev={goToPreviousStep} />;
             case 5:
-                return <Step5Summary data={data} onNext={goToNextStep} onPrev={goToPreviousStep} />;
+                return <Step5Payment data={data} updateData={updateData} onNext={goToNextStep} onPrev={goToPreviousStep} />;
             case 6:
-                return <Step6Payment data={data} updateData={updateData} onNext={goToNextStep} onPrev={goToPreviousStep} />;
-            case 7:
-                return <Step7IdentityVerification data={data} updateData={updateData} onNext={goToNextStep} onPrev={goToPreviousStep} />;
-            case 8:
-                return <Step8Completion data={data} />;
+                return <Step6Completion data={data} />;
             default:
                 return <div>Unknown Step</div>;
         }
     };
 
     const phases = [
-        { id: 1, label: 'Eligibility', activeIfStepGTE: 1, completedIfStepGT: 2 },
-        { id: 2, label: 'Information', activeIfStepGTE: 3, completedIfStepGT: 4 },
-        { id: 3, label: 'Complete', activeIfStepGTE: 5, completedIfStepGT: 8 },
+        { id: 1, label: 'Basic Information', activeIfStepGTE: 1, completedIfStepGT: 2 },
+        { id: 2, label: 'Address Information', activeIfStepGTE: 3, completedIfStepGT: 3 },
+        { id: 3, label: 'Identification Information', activeIfStepGTE: 4, completedIfStepGT: 5 },
+        { id: 4, label: 'Complete', activeIfStepGTE: 6, completedIfStepGT: 6 },
     ];
 
     const currentPhase = getPhaseInfo(data.step).currentPhase;
@@ -282,9 +275,10 @@ export function RegistrationLayout() {
                                 </div>
                                 <span style={{
                                     color: isActive || isCompleted ? 'white' : 'rgba(255,255,255,0.7)',
-                                    fontSize: '0.75rem',
+                                    fontSize: '0.7rem',
                                     marginTop: '6px',
-                                    fontWeight: isActive ? '600' : 'normal'
+                                    fontWeight: isActive ? '600' : 'normal',
+                                    whiteSpace: 'nowrap'
                                 }}>
                                     {phase.label}
                                 </span>
@@ -308,10 +302,10 @@ export function RegistrationLayout() {
             <div className="registration-card">
                 {renderStep()}
 
-                {/* Pagination Dots (Don't show on Step 0 or 8 typically) */}
-                {data.step > 0 && data.step < 8 && (
+                {/* Pagination Dots (Don't show on Step 6 typically) */}
+                {data.step > 0 && data.step < 6 && (
                     <div className="pagination-dots">
-                        {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                        {[1, 2, 3, 4, 5].map(num => (
                             <div key={num} className={`dot ${data.step === num ? 'active' : ''}`} />
                         ))}
                     </div>
