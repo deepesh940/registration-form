@@ -28,8 +28,8 @@ export function Step7Completion({ data }: Props) {
             <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)', fontWeight: '600' }}>Application Submitted</h2>
 
             <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.5' }}>
-                Thank you for applying, {data.firstName}.<br />
-                Your application is currently under review by our team.
+                Thank you for opening a bank account with us.<br />
+                We will contact you soon for any further details.
             </p>
 
             <div style={{
