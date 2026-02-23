@@ -116,6 +116,9 @@ export function Step2BasicInfo({ data, updateData, onNext, onPrev }: Props) {
                             <option value="" disabled>Select Marital Status</option>
                             <option value="Single">Single</option>
                             <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                            <option value="Separated">Separated</option>
                         </select>
                     </div>
 
